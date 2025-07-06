@@ -7,8 +7,28 @@
 
 import axios from 'axios';
 
+// Determine the base URL for API requests based on environment
+const getApiBaseUrl = () => {
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // When running in browser, use the current hostname to determine API URL
+    const hostname = window.location.hostname;
+    
+    // If we're on localhost, use the local development server
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8080/api';
+    }
+    
+    // For production deployment, use relative URL which will be handled by Next.js rewrites
+    return '/api';
+  }
+  
+  // Server-side rendering - use environment variable or default
+  return process.env.API_URL || '/api';
+};
+
 // Base URL for API requests
-const API_URL = 'http://localhost:8080/api';
+const API_URL = getApiBaseUrl();
 
 // Create an axios instance with default config
 const api = axios.create({
